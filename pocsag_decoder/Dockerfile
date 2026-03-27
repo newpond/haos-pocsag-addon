@@ -5,15 +5,11 @@ RUN apk add --no-cache \
     rtl-sdr \
     mosquitto-clients \
     python3 \
-    jq \
-    curl
-
-# Install multimon-ng from Alpine (available on aarch64 in HA base images)
-RUN apk add --no-cache multimon-ng || true
+    jq
 
 COPY run.sh /run.sh
 COPY parser.py /parser.py
 
 RUN chmod +x /run.sh
 
-CMD [ "/run.sh" ]
+# DO NOT set CMD or ENTRYPOINT
