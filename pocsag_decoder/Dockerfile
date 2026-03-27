@@ -1,11 +1,11 @@
-FROM ghcr.io/home-assistant/aarch64-base:latest
+ARG BUILD_FROM
+FROM $BUILD_FROM
 
 RUN apk add --no-cache \
     rtl-sdr \
     multimon-ng \
     mosquitto-clients \
     python3 \
-    py3-pip \
     jq
 
 COPY run.sh /run.sh
