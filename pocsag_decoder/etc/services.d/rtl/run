@@ -1,0 +1,6 @@
+#!/usr/bin/with-contenv bash
+
+FREQ=$(jq -r ".frequency" /data/options.json)
+GAIN=$(jq -r ".gain" /data/options.json)
+
+exec rtl_fm -f ${FREQ}M -M fm -s 22050 -g ${GAIN}
