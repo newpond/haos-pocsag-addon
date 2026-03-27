@@ -39,6 +39,11 @@ for line in sys.stdin:
         "ric": int(ric),
         "message": msg,
         "ts": int(time.time())
+    })
+    publish({
+        "ric": int(ric),
+        "message": msg,
+        "ts": int(time.time())
     })    })
 
     subprocess.run([
