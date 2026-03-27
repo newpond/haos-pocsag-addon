@@ -1,40 +1,45 @@
 import sys
 import json
-import subprocess
 import re
 import time
+import subprocess
 
-TOPIC = sys.argv[1]
-
+TOPIC = None
 pattern = re.compile(r"POCSAG\d+: Address:\s*(\d+).*?Alpha:\s*(.*)")
 
-seen_cache = {}
-DEDUP = 20
+cache = {}
 
-def dup(key):
+def dedup(key, ttl=15):
     now = time.time()
-    if key in seen_cache and now - seen_cache[key] < DEDUP:
+    if key in cache and now - cache[key] < ttl:
         return True
-    seen_cache[key] = now
+    cache[key] = now
     return False
+
+def publish(payload):
+    subprocess.run([
+        "mosquitto_pub",
+        "-h", "core-mosquitto",
+        "-t", TOPIC,
+        "-m", json.dumps(payload)
+    ], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
 for line in sys.stdin:
     m = pattern.search(line)
     if not m:
         continue
 
-    ric = int(m.group(1))
-    msg = m.group(2).strip()
-
+    ric, msg = m.group(1), m.group(2).strip()
     key = f"{ric}:{msg}"
-    if dup(key):
+
+    if dedup(key):
         continue
 
-    payload = json.dumps({
-        "ric": ric,
+    publish({
+        "ric": int(ric),
         "message": msg,
         "ts": int(time.time())
-    })
+    })    })
 
     subprocess.run([
         "mosquitto_pub",
