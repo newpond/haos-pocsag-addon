@@ -1,5 +1,5 @@
-ARG BUILD_FROM
-FROM ghcr.io/home-assistant/aarch64-base-debian:latest
+ARG BUILD_FROM=ghcr.io/home-assistant/aarch64-base-debian:latest
+FROM ${BUILD_FROM}
 
 RUN apk add --no-cache \
     rtl-sdr \
