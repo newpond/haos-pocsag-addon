@@ -22,4 +22,8 @@
     "mqtt_topic": "str",
     "baud": "list(POCSAG512|POCSAG1200|POCSAG2400)"
   }
+  "build_from": {
+    "aarch64": "ghcr.io/home-assistant/aarch64-base:3.19",
+    "armv7": "ghcr.io/home-assistant/armv7-base:3.19"
+}
 }
