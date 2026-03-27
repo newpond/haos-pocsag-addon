@@ -4,37 +4,44 @@ import subprocess
 import re
 import time
 
-MQTT_HOST = sys.argv[1]
-TOPIC = sys.argv[2]
+TOPIC = sys.argv[1]
 
 pattern = re.compile(r"POCSAG\d+: Address:\s*(\d+).*?Alpha:\s*(.*)")
 
-last_messages = {}
-DEDUP_SECONDS = 30
+seen_cache = {}
+DEDUP = 20
 
-def is_duplicate(ric, msg):
-    key = f"{ric}:{msg}"
+def dup(key):
     now = time.time()
-
-    if key in last_messages:
-        if now - last_messages[key] < DEDUP_SECONDS:
-            return True
-
-    last_messages[key] = now
+    if key in seen_cache and now - seen_cache[key] < DEDUP:
+        return True
+    seen_cache[key] = now
     return False
 
 for line in sys.stdin:
-    match = pattern.search(line)
-    if match:
-        ric = int(match.group(1))
-        msg = match.group(2).strip()
+    m = pattern.search(line)
+    if not m:
+        continue
 
-        if not msg:
-            continue
+    ric = int(m.group(1))
+    msg = m.group(2).strip()
 
-        if is_duplicate(ric, msg):
-            continue
+    key = f"{ric}:{msg}"
+    if dup(key):
+        continue
 
+    payload = json.dumps({
+        "ric": ric,
+        "message": msg,
+        "ts": int(time.time())
+    })
+
+    subprocess.run([
+        "mosquitto_pub",
+        "-h", "core-mosquitto",
+        "-t", TOPIC,
+        "-m", payload
+    ])
         payload = json.dumps({
             "ric": ric,
             "message": msg,
