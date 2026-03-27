@@ -1,5 +1,6 @@
 name: "POCSAG Decoder"
 slug: "pocsag_decoder"
+description: "Decode POCSAG pager messages and send to MQTT"
 version: "2.0.0"
 
 startup: services
