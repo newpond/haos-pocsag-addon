@@ -1,5 +1,0 @@
-#!/usr/bin/with-contenv bash
-
-BAUD=$(jq -r ".baud" /data/options.json)
-
-exec multimon-ng -t raw -a ${BAUD} -
