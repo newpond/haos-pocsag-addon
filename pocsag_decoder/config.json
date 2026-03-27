@@ -1,0 +1,25 @@
+{
+  "name": "POCSAG Decoder (RTL-SDR)",
+  "version": "1.0.0",
+  "slug": "pocsag_decoder",
+  "description": "Decode POCSAG pager messages and send to MQTT",
+  "startup": "services",
+  "boot": "auto",
+  "host_network": true,
+  "devices": ["/dev/bus/usb"],
+  "arch": ["armv7", "aarch64", "amd64"],
+  "options": {
+    "frequency": 439.9875,
+    "gain": 20,
+    "mqtt_host": "core-mosquitto",
+    "mqtt_topic": "pager/messages",
+    "baud": "POCSAG1200"
+  },
+  "schema": {
+    "frequency": "float",
+    "gain": "int",
+    "mqtt_host": "str",
+    "mqtt_topic": "str",
+    "baud": "list(POCSAG512|POCSAG1200|POCSAG2400)"
+  }
+}
