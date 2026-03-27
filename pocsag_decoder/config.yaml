@@ -1,11 +1,11 @@
 name: "POCSAG Decoder"
-version: "1.0.0"
 slug: "pocsag_decoder"
-description: "RTL-SDR POCSAG → MQTT bridge"
+version: "2.0.0"
 
 startup: services
 boot: auto
 
+init: false
 host_network: true
 
 devices:
@@ -19,9 +19,11 @@ options:
   gain: 30
   mqtt_topic: pager/messages
   baud: POCSAG1200
+  debug: false
 
 schema:
   frequency: float
   gain: int
   mqtt_topic: str
   baud: list(POCSAG512|POCSAG1200|POCSAG2400)
+  debug: bool
