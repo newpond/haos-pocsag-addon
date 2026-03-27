@@ -1,25 +1,18 @@
 ARG BUILD_FROM
 FROM $BUILD_FROM
 
-# Install dependencies
+# Install only what's available
 RUN apk add --no-cache \
     rtl-sdr \
-    rtl-sdr-dev \
     mosquitto-clients \
     python3 \
     jq \
-    git \
-    build-base \
-    cmake
+    curl
 
-# Build multimon-ng from source
-RUN git clone https://github.com/EliasOenal/multimon-ng /tmp/multimon-ng && \
-    cd /tmp/multimon-ng && \
-    mkdir build && cd build && \
-    cmake .. && \
-    make && \
-    make install && \
-    rm -rf /tmp/multimon-ng
+# Download prebuilt multimon-ng binary (ARM64)
+RUN curl -L -o /usr/local/bin/multimon-ng \
+    https://github.com/EliasOenal/multimon-ng/releases/download/1.2.0/multimon-ng-linux-arm64 && \
+    chmod +x /usr/local/bin/multimon-ng
 
 COPY run.sh /run.sh
 COPY parser.py /parser.py
